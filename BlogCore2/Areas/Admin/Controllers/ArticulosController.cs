@@ -1,5 +1,6 @@
 ﻿using BlogCore2.AccesoDatos.Data.Repository;
 using BlogCore2.Modelos.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace BlogCore2.Areas.Admin.Controllers
 {
-    [Area("Admin")]
+    [Area("Admin"), Authorize]
     public class ArticulosController : Controller
     {
         private readonly IContenedorTrabajo _contenedorTrabajo;

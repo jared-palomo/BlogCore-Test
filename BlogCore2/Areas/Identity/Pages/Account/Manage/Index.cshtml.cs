@@ -23,6 +23,7 @@ namespace BlogCore2.Areas.Identity.Pages.Account.Manage
             _signInManager = signInManager;
         }
 
+        [Display(Name = "Email de usuario")]
         public string Username { get; set; }
 
         [TempData]
@@ -34,22 +35,36 @@ namespace BlogCore2.Areas.Identity.Pages.Account.Manage
         public class InputModel
         {
             [Phone]
-            [Display(Name = "Phone number")]
+            [Display(Name = "Teléfono")]
             public string PhoneNumber { get; set; }
+
+            public string Nombre { get; set; }
+
+            [Display(Name ="Dirección")]
+            public string Direccion { get; set; }
+
+            public string Ciudad { get; set; }
+
+            [Display(Name ="País")]
+            public string Pais { get; set; }
         }
 
-        private async Task LoadAsync(ApplicationUser user)
-        {
-            var userName = await _userManager.GetUserNameAsync(user);
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+        //private async Task LoadAsync(ApplicationUser user)
+        //{
+        //    var userName = await _userManager.GetUserNameAsync(user);
+        //    var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
 
-            Username = userName;
+        //    Username = userName;
 
-            Input = new InputModel
-            {
-                PhoneNumber = phoneNumber
-            };
-        }
+        //    Input = new InputModel
+        //    {
+        //        Nombre = user.Nombre,
+        //        Direccion = user.Direccion,
+        //        Pais = user.Pais,
+        //        Ciudad = user.Ciudad,
+        //        PhoneNumber = phoneNumber
+        //    };
+        //}
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -59,7 +74,21 @@ namespace BlogCore2.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            await LoadAsync(user);
+            var userName = await _userManager.GetUserNameAsync(user);
+            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+
+            Username = userName;
+
+            Input = new InputModel
+            {
+                Nombre = user.Nombre,
+                Direccion = user.Direccion,
+                Pais = user.Pais,
+                Ciudad = user.Ciudad,
+                PhoneNumber = phoneNumber
+            };
+
+            //await LoadAsync(user);
             return Page();
         }
 
@@ -71,11 +100,11 @@ namespace BlogCore2.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            if (!ModelState.IsValid)
-            {
-                await LoadAsync(user);
-                return Page();
-            }
+            //if (!ModelState.IsValid)
+            //{
+            //    await LoadAsync(user);
+            //    return Page();
+            //}
 
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
             if (Input.PhoneNumber != phoneNumber)
@@ -88,8 +117,16 @@ namespace BlogCore2.Areas.Identity.Pages.Account.Manage
                 }
             }
 
+            user.Nombre = Input.Nombre;
+            user.PhoneNumber = Input.PhoneNumber;
+            user.Direccion = Input.Direccion;
+            user.Pais = Input.Pais;
+            user.Ciudad = Input.Ciudad;
+
+            await _userManager.UpdateAsync(user);
+
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your profile has been updated";
+            StatusMessage = "Se ha actualizado tu perfil.";
             return RedirectToPage();
         }
     }

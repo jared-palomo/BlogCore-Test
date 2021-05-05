@@ -1,5 +1,6 @@
 ﻿using BlogCore2.AccesoDatos.Data.Repository;
 using BlogCore2.Modelos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BlogCore2.Areas.Admin.Controllers
 {
-    [Area("Admin")]
+    [Area("Admin"), Authorize]
     public class CategoriasController : Controller
     {
         private readonly IContenedorTrabajo _contenedorTrabajo;
